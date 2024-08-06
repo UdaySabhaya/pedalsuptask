@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model CycleType {
+  id            Int             @id @default(autoincrement())
+  type          String
+  period        String
+  rent          Int
+  RentalRequest RentalRequest[]
+}
+
+model Users {
+  id       Int             @id @default(autoincrement())
+  name     String
+  email    String          @unique
+  password String
+  userType String?         @default("customer")
+  // requests RentalRequest[]
+}
+
+model RentalRequest {
+  id                    Int       @id @default(autoincrement())
+  name                  String
+  email                 String
+  contactNumber         String
+  address               String
+  sex                   String
+  age                   Int
+  proofOfIdentification String
+  cycleTypeId           Int
+  cycleType             CycleType @relation(fields: [cycleTypeId], references: [id])
+  uniqueCode            String?
+  status                String?    @default("pending")
+  // userId                Int
+  // user                  Users     @relation(fields: [userId], references: [id])
+}
